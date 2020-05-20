@@ -17,7 +17,7 @@ pipenv install --dev
 Run tests in pipenv environment:
 
 ```shell
-pipenv run pytest
+pipenv run python3 -m pytest
 ```
 
 Tests require a SCUTTLE API key with full permissions. This key should be the
