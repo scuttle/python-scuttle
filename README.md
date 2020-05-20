@@ -20,6 +20,5 @@ Run tests in pipenv environment:
 pipenv run python3 -m pytest
 ```
 
-Tests require a SCUTTLE API key with full permissions. This key should be the
-contents of `token.secret.txt` which is to be placed in the test directory. Do
-make sure it's in the gitignore.
+Tests require a SCUTTLE API key with full permissions. Tests will look for this
+key in the `SCUTTLE_API_KEY` environment variable.

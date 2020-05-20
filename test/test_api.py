@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
+import os
 import pytest
 import scuttle
 
-TOKEN = None
-with open("token.secret.txt", 'r') as token_file:
-    TOKEN = token_file.readline().strip()
+TOKEN = os.environ['SCUTTLE_API_KEY']
 
 def test_something():
     wiki = scuttle.scuttle('en', 1)
