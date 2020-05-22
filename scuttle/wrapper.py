@@ -31,4 +31,9 @@ class ApiWrapper:
         except ModuleNotFoundError:
             raise ModuleNotFoundError("API version {} does not exist."
                                       .format(self.version))
-        self.api = api_module.Api()
+        self.api = api_module.Api(self.domain, self.api_key)
+
+    def __getattr__(self, attr):
+        # Redirect attribute requests to api.
+        # Where no such property exists, raise a verbose error.
+        return getattr(self.api, attr)
