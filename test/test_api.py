@@ -4,7 +4,24 @@ import os
 import pytest
 import scuttle
 
-TOKEN = os.environ['SCUTTLE_API_KEY']
+API_KEY = os.environ['SCUTTLE_API_KEY']
 
-def test_something():
-    wiki = scuttle.scuttle('en', 1)
+def test_basic():
+    wiki = scuttle.scuttle('en', None, 1)
+    assert wiki.domain == 'en'
+    assert wiki.version == 1
+    assert isinstance(wiki.api, scuttle.versions.v1.Api)
+
+def test_get_nonexistent_version():
+    with pytest.raises(ModuleNotFoundError) as e:
+        wiki = scuttle.scuttle('en', None, 0)
+    assert str(e.value) == "API version 0 does not exist."
+
+def test_get_latest_version():
+    wiki = scuttle.scuttle('en', None)
+    assert wiki.version == 1
+
+def test_get_wikis():
+    wiki = scuttle.scuttle('en', API_KEY, 1)
+    print(wiki.wikis())
+    assert False

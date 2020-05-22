@@ -5,6 +5,14 @@ Python wrapper around SCUTTLE API.
 
 ## Usage
 
+Create a wrapper for a given wiki and API version:
+
+```python
+from scuttle import scuttle
+
+wiki = scuttle('en', 1)
+```
+
 ## Testing
 
 Install [Pipenv](https://pypi.org/project/pipenv/) and install development
