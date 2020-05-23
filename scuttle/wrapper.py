@@ -3,9 +3,8 @@
 """Provides methods to interface with a given API instance."""
 
 import requests
-import importlib
 
-print(importlib.import_module('.v1', 'scuttle.versions'))
+from scuttle.versions import v1
 
 def scuttle(wiki, api_key, api_version=1):
     """Create a new API wrapper for a given wiki and API version.
@@ -25,13 +24,11 @@ class ApiWrapper:
         self.api_key = api_key
         self.version = api_version
 
-        try:
-            api_module = importlib.import_module(".v{}".format(self.version),
-                                                 'scuttle.versions')
-        except ModuleNotFoundError:
+        if self.version == 1:
+            self.api = v1.Api(self.domain, self.api_key)
+        else:
             raise ModuleNotFoundError("API version {} does not exist."
                                       .format(self.version))
-        self.api = api_module.Api(self.domain, self.api_key)
 
     def __getattr__(self, attr):
         # Redirect attribute requests to api.
