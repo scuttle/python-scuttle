@@ -10,7 +10,8 @@ Create a wrapper for a given wiki and API version:
 ```python
 from scuttle import scuttle
 
-wiki = scuttle('en', 1)
+API_KEY = "eyJ0eXAiOiJKV1QiLC(...)" # Personal Access Token
+wiki = scuttle('en', API_KEY, 1)
 ```
 
 ## Testing

@@ -10,10 +10,10 @@ class BaseApi:
         self.api_key = api_key
 
     def request(self, namespace, value=None):
-        response = requests.get("{}/{}/{}".format(
-            self.endpoint,
-            namespace,
-            "" if value is None else value),
+        response = requests.get(
+            "{}/{}".format(
+                self.endpoint,
+                namespace.format(value)),
             headers={"Authorization": "Bearer {}".format(self.api_key)})
+        print(response.text)
         return response.json()
-
