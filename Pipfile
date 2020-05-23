@@ -7,9 +7,10 @@ verify_ssl = true
 pytest = "*"
 pipfile-requirements = "*"
 pylint = "*"
+python-dateutil = "*"
 
 [packages]
 requests = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"
