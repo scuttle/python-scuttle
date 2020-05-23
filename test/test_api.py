@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
 import os
+import dateutil.parser as dp
+
 import pytest
+
 import scuttle
 
 API_KEY = os.environ['SCUTTLE_API_KEY']
@@ -33,13 +36,25 @@ def test_page():
     assert set(pages[0].keys()) == {'id', 'slug', 'wd_page_id'}
     page_id = pages[0]['id']
     assert wiki.page_by_id(page_id)['id'] == page_id
-    assert wiki.page_by_slug("scp-1111")['metadata']['wikidot_metadata']['fullname'] == "scp-1111"
+    assert wiki.page_by_slug("scp-001")['metadata']['wikidot_metadata']['fullname'] == "scp-001"
+    if len(votes := wiki.page_votes(page_id)) > 0:
+        assert isinstance(votes[0]['vote'], int)
+    if len(tags := wiki.page_tags(page_id)) > 0:
+        assert isinstance(tags[0]['name'], str)
+    if len(files := wiki.page_files(page_id)) > 0:
+        assert isinstance(files[0]['path'], str)
+
 
 def test_revisions():
     wiki = scuttle.scuttle('en', API_KEY, 1)
     page_id = wiki.all_pages()[0]['id']
-    revision_id = wiki.page_revisions(page_id)[0]['id']
+    revision_id = wiki.all_page_revisions(page_id)[0]['id']
     assert wiki.get_revision(revision_id)['page_id'] == page_id
     full_revision = wiki.get_full_revision(revision_id)
     assert full_revision['page_id'] == page_id
     assert 'content' in full_revision
+    first_rev = wiki.page_revisions(page_id, limit=1, direction="asc")
+    assert len(first_rev) == 1
+    final_rev = wiki.page_revisions(page_id, limit=1, direction="desc")
+    assert dp.parse(first_rev[0]['created_at']) <= dp.parse(final_rev[0]['created_at'])
+

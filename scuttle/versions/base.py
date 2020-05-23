@@ -9,11 +9,15 @@ class BaseApi:
             domain, type(self).version)
         self.api_key = api_key
 
-    def request(self, namespace, value=None):
-        response = requests.get(
+    def _request(self, namespace, value=None, data=None):
+        method = 'get' if data is None else 'post'
+        send = {'headers': {"Authorization": "Bearer {}".format(self.api_key)}}
+        if data is not None:
+            send['data'] = data
+        response = getattr(requests, method)(
             "{}/{}".format(
                 self.endpoint,
                 namespace.format(value)),
-            headers={"Authorization": "Bearer {}".format(self.api_key)})
+            **send)
         print(response.text)
         return response.json()
