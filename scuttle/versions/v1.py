@@ -26,8 +26,13 @@ class Api(BaseApi):
     def all_page_revisions(self, page_id):
         return self._request("page/{}/revisions", page_id)
 
-    def page_revisions(self, page_id, *, limit=20, offset=0, direction="asc"):
-        data = {'limit': limit, 'offset': offset, 'direction': direction}
+    def page_revisions(self, page_id, *,
+                       limit=20, offset=0, direction='asc'):
+        data = {
+            'limit': limit,
+            'offset': offset,
+            'direction': direction,
+        }
         return self._request("page/{}/revisions", page_id, data)
 
     def page_votes(self, page_id):
@@ -51,19 +56,36 @@ class Api(BaseApi):
     def forum(self, forum_id):
         return self._request("forum/{}", forum_id)
 
-    def forum_threads(self, forum_id, since=None):
+    def forum_threads(self, forum_id, *,
+                      since=None, limit=20, offset=0, direction='asc'):
         if since is None:
             return self._request("forum/{}/threads", forum_id)
-        elif isinstance(since, int): # TODO other arguments and move since to data
-            return self._request("forum/{}/since/{}", [forum_id, since])
-        else:
-            raise TypeError("`since` must be a UNIX timestamp")
+        if isinstance(since, int):
+            data = {
+                'timestamp': since,
+                'limit': limit,
+                'offset': offset,
+                'direction': direction,
+            }
+            return self._request("forum/{}/since", forum_id, data)
+        raise TypeError("`since` must be a UNIX timestamp")
 
     def thread(self, thread_id):
         return self._request("thread/{}", thread_id)
 
-    def thread_posts(self, thread_id):
-        return self._request("thread/{}/posts", thread_id) # TODO POST, including since
+    def thread_posts(self, thread_id, *,
+                      since=None, limit=20, offset=0, direction='asc'):
+        if since is None:
+            return self._request("thread/{}/posts", thread_id)
+        if isinstance(since, int):
+            data = {
+                'timestamp': since,
+                'limit': limit,
+                'offset': offset,
+                'direction': direction,
+            }
+            return self._request("thread/{}/since", thread_id, data)
+        raise TypeError("`since` must be a UNIX timestamp")
 
     def post(self, post_id):
         return self._request("post/{}", post_id)
