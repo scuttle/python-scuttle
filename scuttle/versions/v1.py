@@ -88,15 +88,15 @@ class Api(BaseApi):
 
     def thread_posts_since(self, thread_id, since, *,
                            limit, offset, direction):
-        if isinstance(since, int):
-            data = {
-                'timestamp': since,
-                'limit': 20 if limit is None else limit,
-                'offset': 0 if offset is None else offset,
-                'direction': 'asc' if direction is None else direction,
-            }
-            return self._request("thread/{}/since", thread_id, data)
-        raise TypeError("`since` must be a UNIX timestamp")
+        if not isinstance(since, int):
+            raise TypeError("`since` must be a UNIX timestamp")
+        data = {
+            'timestamp': since,
+            'limit': 20 if limit is None else limit,
+            'offset': 0 if offset is None else offset,
+            'direction': 'asc' if direction is None else direction,
+        }
+        return self._request("thread/{}/since", thread_id, data)
 
     def post(self, post_id):
         return self._request("post/{}", post_id)
@@ -108,22 +108,34 @@ class Api(BaseApi):
         return self._request("post/{}/parent", post_id)
 
     def wikidotuser(self, wikidotuser_id):
+        if not isinstance(wikidotuser_id, int):
+            raise TypeError("The Wikidot user ID must be an int")
         return self._request("wikidotuser/{}", wikidotuser_id) # TODO typecheck
         return self._request("wikidotuser/username/{}", wikidotuser_id)
 
     def wikidotuser_avatar(self, wikidotuser_id):
+        if not isinstance(wikidotuser_id, int):
+            raise TypeError("The Wikidot user ID must be an int")
         return self._request("wikidotuser/{}/avatar", wikidotuser_id)
 
     def wikidotuser_pages(self, wikidotuser_id):
+        if not isinstance(wikidotuser_id, int):
+            raise TypeError("The Wikidot user ID must be an int")
         return self._request("wikidotuser/{}/pages", wikidotuser_id) # TODO POST
 
     def wikidotuser_posts(self, wikidotuser_id):
+        if not isinstance(wikidotuser_id, int):
+            raise TypeError("The Wikidot user ID must be an int")
         return self._request("wikidotuser/{}/posts", wikidotuser_id) # TODO POST
 
     def wikidotuser_revisions(self, wikidotuser_id):
+        if not isinstance(wikidotuser_id, int):
+            raise TypeError("The Wikidot user ID must be an int")
         return self._request("wikidotuser/{}/revisions", wikidotuser_id) # TODO POST
 
     def wikidotuser_votes(self, wikidotuser_id):
+        if not isinstance(wikidotuser_id, int):
+            raise TypeError("The Wikidot user ID must be an int")
         return self._request("wikidotuser/{}/votes", wikidotuser_id)
 
     def tags(self):
