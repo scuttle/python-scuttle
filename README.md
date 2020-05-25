@@ -23,4 +23,5 @@ pipenv run python3 -m pytest
 ```
 
 Tests require a SCUTTLE API key with full permissions. Tests will look for this
-key in the `SCUTTLE_API_KEY` environment variable.
+key in the `SCUTTLE_API_KEY` environment variable. Tests require at least
+Python 3.8.
