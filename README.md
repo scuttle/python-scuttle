@@ -5,14 +5,7 @@ Python wrapper around SCUTTLE API.
 
 ## Usage
 
-Create a wrapper for a given wiki and API version:
-
-```python
-from scuttle import scuttle
-
-API_KEY = "eyJ0eXAiOiJKV1QiLC(...)" # Personal Access Token
-wiki = scuttle('en', API_KEY, 1)
-```
+Check out the [wiki](https://github.com/scuttle/python-scuttle/wiki/API-v1).
 
 ## Testing
 
