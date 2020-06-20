@@ -7,6 +7,10 @@ Python wrapper around SCUTTLE API.
 
 Check out the [wiki](https://github.com/scuttle/python-scuttle/wiki/API-v1).
 
+Current SCUTTLE API documentation can be found on [its
+wiki](http://scuttle.wikidot.com/api). Most methods are reproduced with similar
+names.
+
 ## Testing
 
 Install [Pipenv](https://pypi.org/project/pipenv/) and install development
