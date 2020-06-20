@@ -2,6 +2,8 @@
 
 """Provides generic methods for accessing version 1 of the API."""
 
+from collections.abc import Iterable
+
 from .base import BaseApi
 
 class Api(BaseApi):
@@ -27,7 +29,7 @@ class Api(BaseApi):
         return self._request("page/{}/revisions", page_id)
 
     def page_revisions(self, page_id, *,
-                       limit, offset, direction):
+                       limit=None, offset=None, direction=None):
         data = {
             'limit': 20 if limit is None else limit,
             'offset': 0 if offset is None else offset,
@@ -60,15 +62,15 @@ class Api(BaseApi):
         return self._request("forum/{}/threads", forum_id)
 
     def forum_threads_since(self, forum_id, since, *,
-                            limit, offset, direction):
-        if not isinstance(since, int):
-            raise TypeError("`since` must be a UNIX timestamp")
+                            limit=None, offset=None, direction=None):
         data = {
             'timestamp': since,
             'limit': 20 if limit is None else limit,
             'offset': 0 if offset is None else offset,
             'direction': 'asc' if direction is None else direction,
         }
+        if not isinstance(since, int):
+            raise TypeError("`since` must be a UNIX timestamp")
         return self._request("forum/{}/since", forum_id, data)
 
     def thread(self, thread_id):
@@ -78,7 +80,7 @@ class Api(BaseApi):
         return self._request("thread/{}/posts", thread_id)
 
     def thread_posts(self, thread_id, *,
-                     limit, offset, direction):
+                     limit=None, offset=None, direction=None):
         data = {
             'limit': 20 if limit is None else limit,
             'offset': 0 if offset is None else offset,
@@ -87,15 +89,15 @@ class Api(BaseApi):
         return self._request("thread/{}/posts", thread_id, data)
 
     def thread_posts_since(self, thread_id, since, *,
-                           limit, offset, direction):
-        if not isinstance(since, int):
-            raise TypeError("`since` must be a UNIX timestamp")
+                           limit=None, offset=None, direction=None):
         data = {
             'timestamp': since,
             'limit': 20 if limit is None else limit,
             'offset': 0 if offset is None else offset,
             'direction': 'asc' if direction is None else direction,
         }
+        if not isinstance(since, int):
+            raise TypeError("`since` must be a UNIX timestamp")
         return self._request("thread/{}/since", thread_id, data)
 
     def post(self, post_id):
@@ -108,9 +110,8 @@ class Api(BaseApi):
         return self._request("post/{}/parent", post_id)
 
     def wikidotuser(self, wikidotuser_id):
-        if not isinstance(wikidotuser_id, int):
-            raise TypeError("The Wikidot user ID must be an int")
-        return self._request("wikidotuser/{}", wikidotuser_id) # TODO typecheck
+        if isinstance(wikidotuser_id, int):
+            return self._request("wikidotuser/{}", wikidotuser_id)
         return self._request("wikidotuser/username/{}", wikidotuser_id)
 
     def wikidotuser_avatar(self, wikidotuser_id):
@@ -118,20 +119,53 @@ class Api(BaseApi):
             raise TypeError("The Wikidot user ID must be an int")
         return self._request("wikidotuser/{}/avatar", wikidotuser_id)
 
-    def wikidotuser_pages(self, wikidotuser_id):
+    def all_wikidotuser_pages(self, wikidotuser_id):
         if not isinstance(wikidotuser_id, int):
             raise TypeError("The Wikidot user ID must be an int")
-        return self._request("wikidotuser/{}/pages", wikidotuser_id) # TODO POST
+        return self._request("wikidotuser/{}/pages", wikidotuser_id)
 
-    def wikidotuser_posts(self, wikidotuser_id):
+    def wikidotuser_pages(self, wikidotuser_id, *,
+                          limit=None, offset=None, direction=None):
+        data = {
+            'limit': 20 if limit is None else limit,
+            'offset': 0 if offset is None else offset,
+            'direction': 'asc' if direction is None else direction,
+        }
         if not isinstance(wikidotuser_id, int):
             raise TypeError("The Wikidot user ID must be an int")
-        return self._request("wikidotuser/{}/posts", wikidotuser_id) # TODO POST
+        return self._request("wikidotuser/{}/pages", wikidotuser_id, data)
 
-    def wikidotuser_revisions(self, wikidotuser_id):
+    def all_wikidotuser_posts(self, wikidotuser_id):
         if not isinstance(wikidotuser_id, int):
             raise TypeError("The Wikidot user ID must be an int")
-        return self._request("wikidotuser/{}/revisions", wikidotuser_id) # TODO POST
+        return self._request("wikidotuser/{}/posts", wikidotuser_id)
+
+    def wikidotuser_posts(self, wikidotuser_id, *,
+                          limit=None, offset=None, direction=None):
+        data = {
+            'limit': 20 if limit is None else limit,
+            'offset': 0 if offset is None else offset,
+            'direction': 'asc' if direction is None else direction,
+        }
+        if not isinstance(wikidotuser_id, int):
+            raise TypeError("The Wikidot user ID must be an int")
+        return self._request("wikidotuser/{}/posts", wikidotuser_id, data)
+
+    def all_wikidotuser_revisions(self, wikidotuser_id):
+        if not isinstance(wikidotuser_id, int):
+            raise TypeError("The Wikidot user ID must be an int")
+        return self._request("wikidotuser/{}/revisions", wikidotuser_id)
+
+    def wikidotuser_revisions(self, wikidotuser_id, *,
+                              limit=None, offset=None, direction=None):
+        data = {
+            'limit': 20 if limit is None else limit,
+            'offset': 0 if offset is None else offset,
+            'direction': 'asc' if direction is None else direction,
+        }
+        if not isinstance(wikidotuser_id, int):
+            raise TypeError("The Wikidot user ID must be an int")
+        return self._request("wikidotuser/{}/revisions", wikidotuser_id, data)
 
     def wikidotuser_votes(self, wikidotuser_id):
         if not isinstance(wikidotuser_id, int):
@@ -141,7 +175,39 @@ class Api(BaseApi):
     def tags(self):
         return self._request("tag")
 
-    def tag(self, tag_name):
-        return self._request("tag/{}/pages", tag_name) # TODO allow POST and ids and stuff
+    def tag_pages(self, tags):
+        """
+        str `tags`: One tag, finds page IDs with that tag.
+        """
+        if not isinstance(tags, str):
+            raise TypeError("A single tag must be a string")
+        return self._request("tag/{}/pages", tags)
 
-
+    def tags_pages(self, tags, operator='and', *,
+                   limit=None, offset=None, direction=None):
+        """
+        str[] `tags`: A list of tags, finds all page IDs that match the
+        condition.
+        int[] `tags`: A list of SCUTTLE tag IDs, finds all page IDs that match
+        the condition.
+        str `operator`: 'and' or 'or'; defines the condition when specifying
+        multiple tags.
+        """
+        if isinstance(tags, str):
+            raise TypeError("tags must be str[] or int[]; use tag_pages()"
+                            "for single tags")
+        if not isinstance(tags, Iterable):
+            raise TypeError("tags must be a list of str or int")
+        data = {
+            'operator': operator,
+            'limit': 20 if limit is None else limit,
+            'offset': 0 if offset is None else offset,
+            'direction': 'asc' if direction is None else direction,
+        }
+        if all(isinstance(tag, str) for tag in tags):
+            data.update({'names': tags})
+            return self._request("tag/pages", None, data)
+        if all(isinstance(tag, int) for tag in tags):
+            data.update({'ids': tags})
+            return self._request("tag/pages", None, data)
+        raise TypeError("tags must be a list of str or int")

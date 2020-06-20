@@ -8,3 +8,4 @@ env
 pylintrc
 .cache
 Pipfile.lock
+*.egg-info

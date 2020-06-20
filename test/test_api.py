@@ -44,7 +44,6 @@ def test_page():
     if len(files := wiki.page_files(page_id)) > 0:
         assert isinstance(files[0]['path'], str)
 
-
 def test_revisions():
     wiki = scuttle.scuttle('en', API_KEY, 1)
     page_id = wiki.all_pages()[0]['id']
@@ -58,3 +57,7 @@ def test_revisions():
     final_rev = wiki.page_revisions(page_id, limit=1, direction="desc")
     assert dp.parse(first_rev[0]['created_at']) <= dp.parse(final_rev[0]['created_at'])
 
+def test_forums():
+    wiki = scuttle.scuttle('en', API_KEY, 1)
+    forum_id = wiki.all_forums()[0]['id']
+    assert wiki.forum(forum_id)['id'] == forum_id
