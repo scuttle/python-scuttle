@@ -19,5 +19,4 @@ class BaseApi:
                 self.endpoint,
                 namespace.format(value)),
             **send)
-        print(response.text)
         return response.json()
