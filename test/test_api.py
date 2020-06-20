@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import dateutil.parser as dp
 
 import pytest
 
@@ -47,17 +46,26 @@ def test_page():
 def test_revisions():
     wiki = scuttle.scuttle('en', API_KEY, 1)
     page_id = wiki.all_pages()[0]['id']
+    print(f"{page_id=}")
     revision_id = wiki.all_page_revisions(page_id)[0]['id']
+    print(f"{revision_id=}")
     assert wiki.get_revision(revision_id)['page_id'] == page_id
     full_revision = wiki.get_full_revision(revision_id)
+    print(f"{full_revision=}")
     assert full_revision['page_id'] == page_id
     assert 'content' in full_revision
     first_rev = wiki.page_revisions(page_id, limit=1, direction="asc")
+    print(f"{first_rev=}")
     assert len(first_rev) == 1
     final_rev = wiki.page_revisions(page_id, limit=1, direction="desc")
-    assert dp.parse(first_rev[0]['created_at']) <= dp.parse(final_rev[0]['created_at'])
+    print(f"{final_rev=}")
+    assert first_rev[0]['metadata']['wikidot_metadata']['timestamp'] <= final_rev[0]['metadata']['wikidot_metadata']['timestamp']
 
 def test_forums():
     wiki = scuttle.scuttle('en', API_KEY, 1)
     forum_id = wiki.all_forums()[0]['id']
     assert wiki.forum(forum_id)['id'] == forum_id
+
+def test_tags():
+    # TODO
+    pass
