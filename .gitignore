@@ -9,3 +9,5 @@ pylintrc
 .cache
 Pipfile.lock
 *.egg-info
+dist
+build

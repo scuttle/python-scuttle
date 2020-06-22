@@ -36,6 +36,7 @@ def test_page():
     page_id = pages[0]['id']
     assert wiki.page_by_id(page_id)['id'] == page_id
     assert wiki.page_by_slug("scp-001")['metadata']['wikidot_metadata']['fullname'] == "scp-001"
+    assert wiki.page_by_slug("component:ar-theme")['metadata']['wikidot_metadata']['created_by'] == "Croquembouche"
     if len(votes := wiki.page_votes(page_id)) > 0:
         assert isinstance(votes[0]['vote'], int)
     if len(tags := wiki.page_tags(page_id)) > 0:
