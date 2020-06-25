@@ -3,6 +3,18 @@ Python wrapper around SCUTTLE API.
 
 ## Installation
 
+With pip:
+
+```python
+pip install -e git+https://github.com/scuttle/python-scuttle.git
+```
+
+With Pipenv:
+
+```python
+pipenv install -e git+https://github.com/scuttle/python-scuttle.git
+```
+
 ## Usage
 
 Check out the [wiki](https://github.com/scuttle/python-scuttle/wiki/API-v1).
