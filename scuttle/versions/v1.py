@@ -19,6 +19,18 @@ class Api(BaseApi):
     def all_pages(self):
         return self._request("page")
 
+    def all_pages_since(self, since, *,
+                        limit=None, offset=None, direction=None):
+        data = {
+            'timestamp': since,
+            'limit': 20 if limit is None else limit,
+            'offset': 0 if offset is None else offset,
+            'direction': 'asc' if direction is None else direction,
+        }
+        if not isinstance(since, int):
+            raise TypeError("`since` must be a UNIX timestamp")
+        return self._request("page/since", None, data)
+
     def page_by_id(self, page_id):
         return self._request("page/{}", page_id)
 
