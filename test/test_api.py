@@ -43,6 +43,11 @@ def test_page():
         assert isinstance(tags[0]['name'], str)
     if len(files := wiki.page_files(page_id)) > 0:
         assert isinstance(files[0]['path'], str)
+    timestamp = 1500000000
+    pages_since_then = wiki.all_pages_since_mini(timestamp)
+    print(pages_since_then)
+    assert all(page['metadata']['wd_page_created_at'] >= timestamp
+               for page in pages_since_then)
 
 def test_revisions():
     wiki = scuttle.scuttle('en', API_KEY, 1)
