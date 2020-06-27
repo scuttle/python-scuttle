@@ -29,6 +29,19 @@ def test_wiki():
     assert wiki.wikis()[0]['subdomain'] == "admin"
     assert wiki.wiki()['subdomain'] == "en"
 
+def test_pagination():
+    wiki = scuttle.scuttle('en', API_KEY, 1)
+    # will be testing on page revisions pagination
+    page_slug = "main"
+    page_id = wiki.page_by_slug(page_slug)['id']
+    # non-paginated revisions - should just be metadata
+    non_paginated_revisions = wiki.all_pagerevisions(page_id)
+    assert len(non_paginated_revisions) > 100
+    assert 'content' not in non_paginated_revisions[0].keys()
+    # paginated revisions - should include revision content
+    paginated_revisions = wiki.all_pagerevisions.verbose(page_id)
+    assert len(paginated_revisions) == 20
+
 def test_page():
     wiki = scuttle.scuttle('en', API_KEY, 1)
     pages = wiki.all_pages()
