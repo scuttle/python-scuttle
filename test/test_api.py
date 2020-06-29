@@ -8,26 +8,31 @@ import scuttle
 
 API_KEY = os.environ['SCUTTLE_API_KEY']
 
+
 def test_basic():
     wiki = scuttle.scuttle('en', None, 1)
     assert wiki.domain == 'en'
     assert wiki.version == 1
     assert isinstance(wiki.api, scuttle.versions.v1.Api)
 
+
 def test_get_nonexistent_version():
     with pytest.raises(ModuleNotFoundError) as e:
         scuttle.scuttle('en', None, 0)
     assert str(e.value) == "API version 0 does not exist."
+
 
 def test_get_default_version():
     wiki = scuttle.scuttle('en', None)
     assert wiki.version == 1
     assert isinstance(wiki.api, scuttle.versions.v1.Api)
 
+
 def test_wiki():
     wiki = scuttle.scuttle('en', API_KEY, 1)
     assert wiki.wikis()[0]['subdomain'] == "admin"
     assert wiki.wiki()['subdomain'] == "en"
+
 
 def test_page():
     wiki = scuttle.scuttle('en', API_KEY, 1)
@@ -35,8 +40,16 @@ def test_page():
     assert set(pages[0].keys()) == {'id', 'slug', 'wd_page_id'}
     page_id = pages[0]['id']
     assert wiki.page_by_id(page_id)['id'] == page_id
-    assert wiki.page_by_slug("scp-001")['metadata']['wikidot_metadata']['fullname'] == "scp-001"
-    assert wiki.page_by_slug("component:ar-theme")['metadata']['wikidot_metadata']['created_by'] == "Croquembouche"
+    assert (
+        wiki.page_by_slug("scp-001")['metadata']['wikidot_metadata']['fullname']
+        == "scp-001"
+    )
+    assert (
+        wiki.page_by_slug("component:ar-theme")['metadata']['wikidot_metadata'][
+            'created_by'
+        ]
+        == "Croquembouche"
+    )
     if len(votes := wiki.page_votes(page_id)) > 0:
         assert isinstance(votes[0]['vote'], int)
     if len(tags := wiki.page_tags(page_id)) > 0:
@@ -46,8 +59,11 @@ def test_page():
     timestamp = 1500000000
     pages_since_then = wiki.all_pages_since_mini(timestamp)
     print(pages_since_then)
-    assert all(page['metadata']['wd_page_created_at'] >= timestamp
-               for page in pages_since_then)
+    assert all(
+        page['metadata']['wd_page_created_at'] >= timestamp
+        for page in pages_since_then
+    )
+
 
 def test_revisions():
     wiki = scuttle.scuttle('en', API_KEY, 1)
@@ -65,12 +81,17 @@ def test_revisions():
     assert len(first_rev) == 1
     final_rev = wiki.page_revisions(page_id, limit=1, direction="desc")
     print(f"{final_rev=}")
-    assert first_rev[0]['metadata']['wikidot_metadata']['timestamp'] <= final_rev[0]['metadata']['wikidot_metadata']['timestamp']
+    assert (
+        first_rev[0]['metadata']['wikidot_metadata']['timestamp']
+        <= final_rev[0]['metadata']['wikidot_metadata']['timestamp']
+    )
+
 
 def test_forums():
     wiki = scuttle.scuttle('en', API_KEY, 1)
     forum_id = wiki.all_forums()[0]['id']
     assert wiki.forum(forum_id)['id'] == forum_id
+
 
 def test_tags():
     # TODO

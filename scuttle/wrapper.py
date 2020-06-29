@@ -6,6 +6,7 @@ import requests
 
 from scuttle.versions import v1
 
+
 def scuttle(wiki, api_key, api_version=1):
     """Create a new API wrapper for a given wiki and API version.
 
@@ -18,6 +19,7 @@ def scuttle(wiki, api_key, api_version=1):
         raise NotImplementedError
     return ApiWrapper(wiki, api_key, api_version)
 
+
 class ApiWrapper:
     def __init__(self, wiki, api_key, api_version):
         self.domain = wiki
@@ -27,8 +29,9 @@ class ApiWrapper:
         if self.version == 1:
             self.api = v1.Api(self.domain, self.api_key)
         else:
-            raise ModuleNotFoundError("API version {} does not exist."
-                                      .format(self.version))
+            raise ModuleNotFoundError(
+                "API version {} does not exist.".format(self.version)
+            )
 
     def __getattr__(self, attr):
         # Redirect attribute requests to api.

@@ -6,8 +6,10 @@ from collections.abc import Iterable
 
 from .base import BaseApi
 
+
 class Api(BaseApi):
     """API version 1"""
+
     version = 1
 
     def wikis(self):
@@ -19,8 +21,9 @@ class Api(BaseApi):
     def all_pages(self):
         return self._request("page")
 
-    def all_pages_since(self, since, *,
-                        limit=None, offset=None, direction=None):
+    def all_pages_since(
+        self, since, *, limit=None, offset=None, direction=None
+    ):
         data = {
             'limit': 20 if limit is None else limit,
             'offset': 0 if offset is None else offset,
@@ -39,8 +42,9 @@ class Api(BaseApi):
     def all_page_revisions(self, page_id):
         return self._request("page/{}/revisions", page_id)
 
-    def page_revisions(self, page_id, *,
-                       limit=None, offset=None, direction=None):
+    def page_revisions(
+        self, page_id, *, limit=None, offset=None, direction=None
+    ):
         data = {
             'limit': 20 if limit is None else limit,
             'offset': 0 if offset is None else offset,
@@ -72,8 +76,9 @@ class Api(BaseApi):
     def forum_threads(self, forum_id):
         return self._request("forum/{}/threads", forum_id)
 
-    def forum_threads_since(self, forum_id, since, *,
-                            limit=None, offset=None, direction=None):
+    def forum_threads_since(
+        self, forum_id, since, *, limit=None, offset=None, direction=None
+    ):
         data = {
             'timestamp': since,
             'limit': 20 if limit is None else limit,
@@ -90,8 +95,9 @@ class Api(BaseApi):
     def all_thread_posts(self, thread_id):
         return self._request("thread/{}/posts", thread_id)
 
-    def thread_posts(self, thread_id, *,
-                     limit=None, offset=None, direction=None):
+    def thread_posts(
+        self, thread_id, *, limit=None, offset=None, direction=None
+    ):
         data = {
             'limit': 20 if limit is None else limit,
             'offset': 0 if offset is None else offset,
@@ -99,8 +105,9 @@ class Api(BaseApi):
         }
         return self._request("thread/{}/posts", thread_id, data)
 
-    def thread_posts_since(self, thread_id, since, *,
-                           limit=None, offset=None, direction=None):
+    def thread_posts_since(
+        self, thread_id, since, *, limit=None, offset=None, direction=None
+    ):
         data = {
             'timestamp': since,
             'limit': 20 if limit is None else limit,
@@ -135,8 +142,9 @@ class Api(BaseApi):
             raise TypeError("The Wikidot user ID must be an int")
         return self._request("wikidotuser/{}/pages", wikidotuser_id)
 
-    def wikidotuser_pages(self, wikidotuser_id, *,
-                          limit=None, offset=None, direction=None):
+    def wikidotuser_pages(
+        self, wikidotuser_id, *, limit=None, offset=None, direction=None
+    ):
         data = {
             'limit': 20 if limit is None else limit,
             'offset': 0 if offset is None else offset,
@@ -151,8 +159,9 @@ class Api(BaseApi):
             raise TypeError("The Wikidot user ID must be an int")
         return self._request("wikidotuser/{}/posts", wikidotuser_id)
 
-    def wikidotuser_posts(self, wikidotuser_id, *,
-                          limit=None, offset=None, direction=None):
+    def wikidotuser_posts(
+        self, wikidotuser_id, *, limit=None, offset=None, direction=None
+    ):
         data = {
             'limit': 20 if limit is None else limit,
             'offset': 0 if offset is None else offset,
@@ -167,8 +176,9 @@ class Api(BaseApi):
             raise TypeError("The Wikidot user ID must be an int")
         return self._request("wikidotuser/{}/revisions", wikidotuser_id)
 
-    def wikidotuser_revisions(self, wikidotuser_id, *,
-                              limit=None, offset=None, direction=None):
+    def wikidotuser_revisions(
+        self, wikidotuser_id, *, limit=None, offset=None, direction=None
+    ):
         data = {
             'limit': 20 if limit is None else limit,
             'offset': 0 if offset is None else offset,
@@ -194,8 +204,9 @@ class Api(BaseApi):
             raise TypeError("A single tag must be a string")
         return self._request("tag/{}/pages", tags)
 
-    def tags_pages(self, tags, operator='and', *,
-                   limit=None, offset=None, direction=None):
+    def tags_pages(
+        self, tags, operator='and', *, limit=None, offset=None, direction=None
+    ):
         """
         str[] `tags`: A list of tags, finds all page IDs that match the
         condition.
@@ -205,8 +216,9 @@ class Api(BaseApi):
         multiple tags.
         """
         if isinstance(tags, str):
-            raise TypeError("tags must be str[] or int[]; use tag_pages()"
-                            "for single tags")
+            raise TypeError(
+                "tags must be str[] or int[]; use tag_pages()" "for single tags"
+            )
         if not isinstance(tags, Iterable):
             raise TypeError("tags must be a list of str or int")
         data = {
