@@ -8,6 +8,7 @@ pytest = "*"
 pipfile-requirements = "*"
 pylint = "*"
 python-dateutil = "*"
+black = "==19.10b0"
 
 [packages]
 requests = "*"
