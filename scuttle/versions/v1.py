@@ -61,8 +61,8 @@ class Api(BaseApi):
 
     def __init__(self, *args):
         super().__init__(*args)
-        self.all_pages_since = PaginatedMethod(self._all_pages_since)
-        self.all_pagerevisions = PaginatedMethod(self._all_pagerevisions)
+        self.pages_since = PaginatedMethod(self._pages_since)
+        self.pagerevisions = PaginatedMethod(self._pagerevisions)
         self.forum_threads_since = PaginatedMethod(self._forum_threads_since,
                                                    True)
         self.thread_posts = PaginatedMethod(self._thread_posts)
@@ -82,11 +82,11 @@ class Api(BaseApi):
         return None, None
 
     @endpoint("page")
-    def all_pages(self):
+    def pages(self):
         return None, None
 
     @endpoint("page/since/{}")
-    def _all_pages_since(self, since: int, *, data=None):
+    def _pages_since(self, since: int, *, data=None):
         if not isinstance(since, int):
             raise TypeError("`since` must be a UNIX timestamp")
         return since, data
@@ -100,7 +100,7 @@ class Api(BaseApi):
         return page_slug, None
 
     @endpoint("page/{}/revisions")
-    def _all_pagerevisions(self, page_id: int, *, data=None):
+    def _pagerevisions(self, page_id: int, *, data=None):
         return page_id, data
 
     @endpoint("page/{}/votes")
@@ -124,7 +124,7 @@ class Api(BaseApi):
         return revision_id, None
 
     @endpoint("forum")
-    def all_forums(self):
+    def forums(self):
         return None, None
 
     @endpoint("forum/{}")
@@ -144,10 +144,6 @@ class Api(BaseApi):
 
     @endpoint("thread/{}")
     def thread(self, thread_id):
-        return thread_id, None
-
-    @endpoint("thread/{}/posts")
-    def all_thread_posts(self, thread_id):
         return thread_id, None
 
     @endpoint("thread/{}/posts")
