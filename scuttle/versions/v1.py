@@ -10,29 +10,21 @@ from .base import BaseApi
 
 class NoNonPaginatedVersionError(Exception):
     """Raised when a non-paginated of a paginated-only method is called."""
-    pass
-
-@wrapt.decorator
-def has_paginated_version(method, instance, args, kwargs):
-    def paginated(*args, limit=None, offset=None, direction=None):
-        print("PAGINATED METHOD", method)
-        print("PAGINATED ARGS", args)
-        data = {
-            'limit': 20 if limit is None else limit,
-            'offset': 0 if offset is None else offset,
-            'direction': 'asc' if direction is None else direction,
-        }
-        return method(*args, data=data)
-    setattr(instance.verbose, method.__name__, paginated)
-    return method
 
 def endpoint(endpoint_url):
+    """Decorator for API methods. Denotes the URL endpoint."""
     @wrapt.decorator
     def wrapper(method, instance, args, kwargs):
         return instance.request(endpoint_url, *method(*args, **kwargs))
     return wrapper
 
 class PaginatedMethod:
+    """Object representing a method that has a POST paginated version (with
+    args like limit, offset, direction) as well as optionally a GET
+    non-paginated version. The GET version is accessed by calling the object as
+    if it were a method. The POST version is accessed by calling the `verbose`
+    attribute.
+    """
     def __init__(self, method: Callable, verbose_only: bool = False):
         self._method = method
         self._verbose_only = verbose_only
@@ -219,12 +211,9 @@ class Api(BaseApi):
     @endpoint("tag/pages")
     def _tags_pages(self, tags: Union[List[int], List[str]], operator: str = 'and', *, data):
         """
-        str[] `tags`: A list of tag names, finds all page IDs that match the
-        condition.
-        int[] `tags`: A list of SCUTTLE tag IDs, finds all page IDs that match
-        the condition.
-        str `operator`: 'and' or 'or'; defines the condition when specifying
-        multiple tags.
+        str[] `tags`: A list of tag names.
+        int[] `tags`: A list of SCUTTLE tag IDs.
+        str `operator`: 'and' or 'or'; defines how tags are combined.
         """
         if isinstance(tags, str):
             raise TypeError("`tags` must be a list of at least one tag; use tag_pages() for a single tag name")
