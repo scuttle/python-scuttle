@@ -2,7 +2,6 @@
 
 """Provides generic methods for accessing version 1 of the API."""
 
-from collections.abc import Iterable
 from typing import Callable, List, Union
 
 import wrapt
@@ -62,7 +61,7 @@ class Api(BaseApi):
     def __init__(self, *args):
         super().__init__(*args)
         self.pages_since = PaginatedMethod(self._pages_since)
-        self.pagerevisions = PaginatedMethod(self._pagerevisions)
+        self.page_revisions = PaginatedMethod(self._page_revisions)
         self.forum_threads_since = PaginatedMethod(self._forum_threads_since,
                                                    True)
         self.thread_posts = PaginatedMethod(self._thread_posts)
@@ -100,7 +99,7 @@ class Api(BaseApi):
         return page_slug, None
 
     @endpoint("page/{}/revisions")
-    def _pagerevisions(self, page_id: int, *, data=None):
+    def _page_revisions(self, page_id: int, *, data=None):
         return page_id, data
 
     @endpoint("page/{}/votes")
@@ -116,11 +115,11 @@ class Api(BaseApi):
         return page_id, None
 
     @endpoint("revision/{}")
-    def getrevision(self, revision_id):
+    def revision(self, revision_id):
         return revision_id, None
 
     @endpoint("revision/{}/full")
-    def get_fullrevision(self, revision_id):
+    def full_revision(self, revision_id):
         return revision_id, None
 
     @endpoint("forum")

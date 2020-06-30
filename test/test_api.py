@@ -15,9 +15,9 @@ def test_basic():
     assert isinstance(wiki.api, scuttle.versions.v1.Api)
 
 def test_get_nonexistent_version():
-    with pytest.raises(ModuleNotFoundError) as e:
+    with pytest.raises(ModuleNotFoundError) as error:
         scuttle.scuttle('en', None, 0)
-    assert str(e.value) == "API version 0 does not exist."
+        assert str(error.value) == "API version 0 does not exist."
 
 def test_get_default_version():
     wiki = scuttle.scuttle('en', None)
@@ -36,20 +36,20 @@ def test_pagination():
     page_id = wiki.page_by_slug(page_slug)['id']
     # non-paginated revisions - should just be metadata
     print("DOING non-paginated")
-    non_paginated_revisions = wiki.all_pagerevisions(page_id)
+    non_paginated_revisions = wiki.pagerevisions(page_id)
     print("DONE non-paginated")
     assert len(non_paginated_revisions) > 100
     assert 'content' not in non_paginated_revisions[0].keys()
     # paginated revisions - should include revision content
     print("DOING paginated")
-    paginated_revisions = wiki.all_pagerevisions.verbose(page_id)
+    paginated_revisions = wiki.pagerevisions.verbose(page_id)
     print("DONE paginated")
     assert 'content' in paginated_revisions[0].keys()
     assert len(paginated_revisions) == 20
 
 def test_page():
     wiki = scuttle.scuttle('en', API_KEY, 1)
-    pages = wiki.all_pages()
+    pages = wiki.pages()
     assert set(pages[0].keys()) == {'id', 'slug', 'wd_page_id'}
     page_id = pages[0]['id']
     assert wiki.page_by_id(page_id)['id'] == page_id
@@ -62,19 +62,19 @@ def test_page():
     if len(files := wiki.page_files(page_id)) > 0:
         assert isinstance(files[0]['path'], str)
     timestamp = 1500000000
-    pages_since_then = wiki.all_pages_since_mini(timestamp)
+    pages_since_then = wiki.pages_since(timestamp)
     print(pages_since_then)
     assert all(page['metadata']['wd_page_created_at'] >= timestamp
                for page in pages_since_then)
 
 def test_revisions():
     wiki = scuttle.scuttle('en', API_KEY, 1)
-    page_id = wiki.all_pages()[0]['id']
+    page_id = wiki.pages()[0]['id']
     print(f"{page_id=}")
-    revision_id = wiki.all_page_revisions(page_id)[0]['id']
+    revision_id = wiki.page_revisions(page_id)[0]['id']
     print(f"{revision_id=}")
-    assert wiki.get_revision(revision_id)['page_id'] == page_id
-    full_revision = wiki.get_full_revision(revision_id)
+    assert wiki.revision(revision_id)['page_id'] == page_id
+    full_revision = wiki.full_revision(revision_id)
     print(f"{full_revision=}")
     assert full_revision['page_id'] == page_id
     assert 'content' in full_revision
@@ -87,7 +87,7 @@ def test_revisions():
 
 def test_forums():
     wiki = scuttle.scuttle('en', API_KEY, 1)
-    forum_id = wiki.all_forums()[0]['id']
+    forum_id = wiki.forums()[0]['id']
     assert wiki.forum(forum_id)['id'] == forum_id
 
 def test_tags():
