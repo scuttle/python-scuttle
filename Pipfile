@@ -11,6 +11,7 @@ python-dateutil = "*"
 
 [packages]
 requests = "*"
+wrapt = "*"
 
 [requires]
 python_version = "3.8"

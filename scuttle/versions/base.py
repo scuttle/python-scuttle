@@ -9,7 +9,7 @@ class BaseApi:
             domain, type(self).version)
         self.api_key = api_key
 
-    def _request(self, namespace, value=None, data=None):
+    def request(self, namespace, value=None, data=None):
         method = 'get' if data is None else 'post'
         send = {'headers': {"Authorization": "Bearer {}".format(self.api_key)}}
         if data is not None:

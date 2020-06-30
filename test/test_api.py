@@ -35,11 +35,16 @@ def test_pagination():
     page_slug = "main"
     page_id = wiki.page_by_slug(page_slug)['id']
     # non-paginated revisions - should just be metadata
+    print("DOING non-paginated")
     non_paginated_revisions = wiki.all_pagerevisions(page_id)
+    print("DONE non-paginated")
     assert len(non_paginated_revisions) > 100
     assert 'content' not in non_paginated_revisions[0].keys()
     # paginated revisions - should include revision content
+    print("DOING paginated")
     paginated_revisions = wiki.all_pagerevisions.verbose(page_id)
+    print("DONE paginated")
+    assert 'content' in paginated_revisions[0].keys()
     assert len(paginated_revisions) == 20
 
 def test_page():
