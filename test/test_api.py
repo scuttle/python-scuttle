@@ -36,13 +36,13 @@ def test_pagination():
     page_id = wiki.page_by_slug(page_slug)['id']
     # non-paginated revisions - should just be metadata
     print("DOING non-paginated")
-    non_paginated_revisions = wiki.pagerevisions(page_id)
+    non_paginated_revisions = wiki.page_revisions(page_id)
     print("DONE non-paginated")
     assert len(non_paginated_revisions) > 100
     assert 'content' not in non_paginated_revisions[0].keys()
     # paginated revisions - should include revision content
     print("DOING paginated")
-    paginated_revisions = wiki.pagerevisions.verbose(page_id)
+    paginated_revisions = wiki.page_revisions.verbose(page_id)
     print("DONE paginated")
     assert 'content' in paginated_revisions[0].keys()
     assert len(paginated_revisions) == 20
@@ -61,11 +61,12 @@ def test_page():
         assert isinstance(tags[0]['name'], str)
     if len(files := wiki.page_files(page_id)) > 0:
         assert isinstance(files[0]['path'], str)
-    timestamp = 1500000000
-    pages_since_then = wiki.pages_since(timestamp)
-    print(pages_since_then)
-    assert all(page['metadata']['wd_page_created_at'] >= timestamp
-               for page in pages_since_then)
+    # XXX waiting on propagation
+    # timestamp = 1500000000
+    # pages_since_then = wiki.pages_since(timestamp)
+    # print(pages_since_then)
+    # assert all(page['metadata']['wd_page_created_at'] >= timestamp
+    #            for page in pages_since_then)
 
 def test_revisions():
     wiki = scuttle.scuttle('en', API_KEY, 1)
@@ -78,10 +79,10 @@ def test_revisions():
     print(f"{full_revision=}")
     assert full_revision['page_id'] == page_id
     assert 'content' in full_revision
-    first_rev = wiki.page_revisions(page_id, limit=1, direction="asc")
+    first_rev = wiki.page_revisions.verbose(page_id, limit=1, direction='asc')
     print(f"{first_rev=}")
     assert len(first_rev) == 1
-    final_rev = wiki.page_revisions(page_id, limit=1, direction="desc")
+    final_rev = wiki.page_revisions.verbose(page_id, limit=1, direction='desc')
     print(f"{final_rev=}")
     assert first_rev[0]['metadata']['wikidot_metadata']['timestamp'] <= final_rev[0]['metadata']['wikidot_metadata']['timestamp']
 
