@@ -18,6 +18,19 @@ def endpoint(endpoint_url):
         return instance.request(endpoint_url, *method(*args, **kwargs))
     return wrapper
 
+def get_default_data(**kwargs):
+    """Returns a POST data dict using default values."""
+    limit = kwargs.get('limit', 20)
+    offset = kwargs.get('offset', 0)
+    direction = kwargs.get('direction', 'asc')
+    if not isinstance(limit, int):
+        raise TypeError("`limit` must be int")
+    if not isinstance(offset, int):
+        raise TypeError("`offset` must be int")
+    if not direction in ('asc', 'desc'):
+        raise ValueError("`direction` must be one of 'asc', 'desc'")
+    return { 'limit': limit, 'offset': offset, 'direction': direction }
+
 class PaginatedMethod:
     """Object representing a method that has a POST paginated version (with
     args like limit, offset, direction) as well as optionally a GET
@@ -38,12 +51,8 @@ class PaginatedMethod:
             )
         return self._method(*args, **kwargs)
 
-    def verbose(self, *args, limit=None, offset=None, direction=None):
-        data = {
-            'limit': 20 if limit is None else limit,
-            'offset': 0 if offset is None else offset,
-            'direction': 'asc' if direction is None else direction,
-        }
+    def verbose(self, *args, **kwargs):
+        data = get_default_data(**kwargs)
         return self.__call__(*args, data=data, __verbose=True)
 
 class Api(BaseApi):
@@ -63,6 +72,49 @@ class Api(BaseApi):
         self.wikidotuser_posts = PaginatedMethod(self._wikidotuser_posts)
         self.wikidotuser_revisions = PaginatedMethod(self._wikidotuser_revisions)
         self.tags_pages = PaginatedMethod(self._tags_pages, True)
+
+    def verbose(self, method: Callable, *args, **kwargs):
+        """Returns a generator that iterates over a paginated method.
+
+        callable `method`: The paginated method to iterate.
+        Remaining arguments will be passed to this method.
+
+
+        Pass this function int `limit`, an initial int `offset`, and str
+        `direction`. Each time the returned generator is called, it will
+        increment `offset` by `limit` and return the method for the resulting
+        set of parameters. Effectively, applied to a paginated method, this
+        generator is the same as turning the page.
+
+            wiki = scuttle(domain, API_KEY, 1)
+            generator = wiki.verbose(wiki.thread_posts, thread_id, limit=5)
+            for posts in generator:
+                print(len(posts))  # will be 5, except at very end
+
+        Note that at the end of the data, the length of the final 'page' will
+        very likely be less than `limit`.
+        """
+        print("hello!")
+        print(method, isinstance(method, PaginatedMethod))
+        if not isinstance(method, PaginatedMethod):
+            raise TypeError("Iterated method must be a paginated method")
+        data = get_default_data(**kwargs)
+
+        def paginated_generator():
+            limit: int = data['limit']
+            length: int = limit
+            offset: int = data['offset']
+            direction: str = data['direction']
+            while True:
+                result = method.verbose(*args, limit=limit, offset=offset,
+                                direction=direction)
+                yield result
+                if length < data['limit']:
+                    return
+                length = len(result)
+                offset += length
+
+        return paginated_generator()
 
     @endpoint("wikis")
     def wikis(self):

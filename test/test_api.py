@@ -35,17 +35,30 @@ def test_pagination():
     page_slug = "main"
     page_id = wiki.page_by_slug(page_slug)['id']
     # non-paginated revisions - should just be metadata
-    print("DOING non-paginated")
     non_paginated_revisions = wiki.page_revisions(page_id)
-    print("DONE non-paginated")
     assert len(non_paginated_revisions) > 100
     assert 'content' not in non_paginated_revisions[0].keys()
     # paginated revisions - should include revision content
-    print("DOING paginated")
     paginated_revisions = wiki.page_revisions.verbose(page_id)
-    print("DONE paginated")
     assert 'content' in paginated_revisions[0].keys()
     assert len(paginated_revisions) == 20
+
+def test_pagination_generator():
+    wiki = scuttle.scuttle('en', API_KEY, 1)
+    # make a generator
+    page_slug = "main"
+    page_id = wiki.page_by_slug(page_slug)['id']
+    gen1 = wiki.verbose(wiki.page_revisions, page_id, limit=100)
+    assert int(next(gen1)[0]['metadata']['wikidot_metadata']['revision_number']) == 0
+    assert int(next(gen1)[0]['metadata']['wikidot_metadata']['revision_number']) == 100
+    # make another generator, see if they interfere
+    gen2 = wiki.verbose(wiki.page_revisions, page_id, limit=10, offset=10)
+    assert int(next(gen2)[0]['metadata']['wikidot_metadata']['revision_number']) == 10
+    assert int(next(gen2)[0]['metadata']['wikidot_metadata']['revision_number']) == 20
+    assert int(next(gen1)[0]['metadata']['wikidot_metadata']['revision_number']) == 200
+    # check errors
+    with pytest.raises(TypeError):
+        wiki.verbose(len)
 
 def test_page():
     wiki = scuttle.scuttle('en', API_KEY, 1)
