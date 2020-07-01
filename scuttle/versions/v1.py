@@ -8,15 +8,20 @@ import wrapt
 
 from .base import BaseApi
 
+
 class NoNonPaginatedVersionError(Exception):
     """Raised when a non-paginated of a paginated-only method is called."""
 
+
 def endpoint(endpoint_url):
     """Decorator for API methods. Denotes the URL endpoint."""
+
     @wrapt.decorator
     def wrapper(method, instance, args, kwargs):
         return instance.request(endpoint_url, *method(*args, **kwargs))
+
     return wrapper
+
 
 def get_default_data(**kwargs):
     """Returns a POST data dict using default values."""
@@ -29,7 +34,8 @@ def get_default_data(**kwargs):
         raise TypeError("`offset` must be int")
     if not direction in ('asc', 'desc'):
         raise ValueError("`direction` must be one of 'asc', 'desc'")
-    return { 'limit': limit, 'offset': offset, 'direction': direction }
+    return {'limit': limit, 'offset': offset, 'direction': direction}
+
 
 class PaginatedMethod:
     """Object representing a method that has a POST paginated version (with
@@ -38,6 +44,7 @@ class PaginatedMethod:
     if it were a method. The POST version is accessed by calling the `verbose`
     attribute.
     """
+
     def __init__(self, method: Callable, verbose_only: bool = False):
         self._method = method
         self._verbose_only = verbose_only
@@ -55,6 +62,7 @@ class PaginatedMethod:
         data = get_default_data(**kwargs)
         return self.__call__(*args, data=data, __verbose=True)
 
+
 class Api(BaseApi):
     """API version 1"""
 
@@ -64,14 +72,18 @@ class Api(BaseApi):
         super().__init__(*args)
         self.pages_since = PaginatedMethod(self._pages_since)
         self.page_revisions = PaginatedMethod(self._page_revisions)
-        self.forum_threads_since = PaginatedMethod(self._forum_threads_since,
-                                                   True)
+        self.forum_threads_since = PaginatedMethod(
+            self._forum_threads_since, True
+        )
         self.thread_posts = PaginatedMethod(self._thread_posts)
-        self.thread_posts_since = PaginatedMethod(self._thread_posts_since,
-                                                  True)
+        self.thread_posts_since = PaginatedMethod(
+            self._thread_posts_since, True
+        )
         self.wikidotuser_pages = PaginatedMethod(self._wikidotuser_pages)
         self.wikidotuser_posts = PaginatedMethod(self._wikidotuser_posts)
-        self.wikidotuser_revisions = PaginatedMethod(self._wikidotuser_revisions)
+        self.wikidotuser_revisions = PaginatedMethod(
+            self._wikidotuser_revisions
+        )
         self.tags_pages = PaginatedMethod(self._tags_pages, True)
 
     def verbose(self, method: Callable, *args, **kwargs):
@@ -107,8 +119,9 @@ class Api(BaseApi):
             offset: int = data['offset']
             direction: str = data['direction']
             while True:
-                result = method.verbose(*args, limit=limit, offset=offset,
-                                direction=direction)
+                result = method.verbose(
+                    *args, limit=limit, offset=offset, direction=direction
+                )
                 yield result
                 if length < data['limit']:
                     return
@@ -262,14 +275,18 @@ class Api(BaseApi):
         return tag, None
 
     @endpoint("tag/pages")
-    def _tags_pages(self, tags: Union[List[int], List[str]], operator: str = 'and', *, data):
+    def _tags_pages(
+        self, tags: Union[List[int], List[str]], operator: str = 'and', *, data
+    ):
         """
         str[] `tags`: A list of tag names.
         int[] `tags`: A list of SCUTTLE tag IDs.
         str `operator`: 'and' or 'or'; defines how tags are combined.
         """
         if isinstance(tags, str):
-            raise TypeError("`tags` must be a list of at least one tag; use tag_pages() for a single tag name")
+            raise TypeError(
+                "`tags` must be a list of at least one tag; use tag_pages() for a single tag name"
+            )
         data['operator'] = operator
         if all(isinstance(tag, str) for tag in tags):
             data['names'] = tags

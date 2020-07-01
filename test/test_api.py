@@ -33,6 +33,7 @@ def test_wiki():
     assert wiki.wikis()[0]['subdomain'] == "admin"
     assert wiki.wiki()['subdomain'] == "en"
 
+
 def test_pagination():
     wiki = scuttle.scuttle('en', API_KEY, 1)
     # will be testing on page revisions pagination
@@ -47,22 +48,39 @@ def test_pagination():
     assert 'content' in paginated_revisions[0].keys()
     assert len(paginated_revisions) == 20
 
+
 def test_pagination_generator():
     wiki = scuttle.scuttle('en', API_KEY, 1)
     # make a generator
     page_slug = "main"
     page_id = wiki.page_by_slug(page_slug)['id']
     gen1 = wiki.verbose(wiki.page_revisions, page_id, limit=100)
-    assert int(next(gen1)[0]['metadata']['wikidot_metadata']['revision_number']) == 0
-    assert int(next(gen1)[0]['metadata']['wikidot_metadata']['revision_number']) == 100
+    assert (
+        int(next(gen1)[0]['metadata']['wikidot_metadata']['revision_number'])
+        == 0
+    )
+    assert (
+        int(next(gen1)[0]['metadata']['wikidot_metadata']['revision_number'])
+        == 100
+    )
     # make another generator, see if they interfere
     gen2 = wiki.verbose(wiki.page_revisions, page_id, limit=10, offset=10)
-    assert int(next(gen2)[0]['metadata']['wikidot_metadata']['revision_number']) == 10
-    assert int(next(gen2)[0]['metadata']['wikidot_metadata']['revision_number']) == 20
-    assert int(next(gen1)[0]['metadata']['wikidot_metadata']['revision_number']) == 200
+    assert (
+        int(next(gen2)[0]['metadata']['wikidot_metadata']['revision_number'])
+        == 10
+    )
+    assert (
+        int(next(gen2)[0]['metadata']['wikidot_metadata']['revision_number'])
+        == 20
+    )
+    assert (
+        int(next(gen1)[0]['metadata']['wikidot_metadata']['revision_number'])
+        == 200
+    )
     # check errors
     with pytest.raises(TypeError):
         wiki.verbose(len)
+
 
 def test_page():
     wiki = scuttle.scuttle('en', API_KEY, 1)
@@ -92,6 +110,7 @@ def test_page():
     # print(pages_since_then)
     # assert all(page['metadata']['wd_page_created_at'] >= timestamp
     #            for page in pages_since_then)
+
 
 def test_revisions():
     wiki = scuttle.scuttle('en', API_KEY, 1)
