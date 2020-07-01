@@ -23,4 +23,11 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     install_requires=["requests"],
+    classifiers=[
+        "Programming Language :: Python :: 3.8",
+        "Intended Audience :: Developers",
+        "Development Status :: 4 - Beta",
+        "License :: OSI Approved :: MIT License",
+    ],
+    python_requires='>=3.8',
 )
