@@ -12,7 +12,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='scuttle',
+    name='scuttle-api-wrapper',
     version=__version__,
     packages=['scuttle', 'scuttle.versions'],
     url="http://github.com/scuttle/python-scuttle",
