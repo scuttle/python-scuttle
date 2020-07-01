@@ -6,7 +6,6 @@ env
 .venv
 .vscode
 .cache
-Pipfile.lock
 *.egg-info
 dist
 build
