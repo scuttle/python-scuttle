@@ -27,4 +27,4 @@ jobs:
         pipenv install -d
     - name: Test with pytest
       run: |
-        pipenv run pytest
+        SCUTTLE_API_KEY=${{ secrets.SCUTTLE_API_KEY }} pipenv run pytest
