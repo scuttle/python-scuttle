@@ -161,23 +161,23 @@ class Api(BaseApi):
         return page_id, data
 
     @endpoint("page/{}/votes")
-    def page_votes(self, page_id):
+    def page_votes(self, page_id: int):
         return page_id, None
 
     @endpoint("page/{}/tags")
-    def page_tags(self, page_id):
+    def page_tags(self, page_id: int):
         return page_id, None
 
     @endpoint("page/{}/files")
-    def page_files(self, page_id):
+    def page_files(self, page_id: int):
         return page_id, None
 
     @endpoint("revision/{}")
-    def revision(self, revision_id):
+    def revision(self, revision_id: int):
         return revision_id, None
 
     @endpoint("revision/{}/full")
-    def full_revision(self, revision_id):
+    def full_revision(self, revision_id: int):
         return revision_id, None
 
     @endpoint("forum")
@@ -185,44 +185,44 @@ class Api(BaseApi):
         return None, None
 
     @endpoint("forum/{}")
-    def forum(self, forum_id):
+    def forum(self, forum_id: int):
         return forum_id, None
 
     @endpoint("forum/{}/threads")
-    def forum_threads(self, forum_id):
+    def forum_threads(self, forum_id: int):
         return forum_id, None
 
     @endpoint("forum/{}/since")
-    def _forum_threads_since(self, forum_id, since, *, data):
+    def _forum_threads_since(self, forum_id: int, since: int, *, data):
         if not isinstance(since, int):
             raise TypeError("`since` must be a UNIX timestamp")
         data['timestamp'] = since
         return forum_id, data
 
     @endpoint("thread/{}")
-    def thread(self, thread_id):
+    def thread(self, thread_id: int):
         return thread_id, None
 
     @endpoint("thread/{}/posts")
-    def _thread_posts(self, thread_id, *, data=None):
+    def _thread_posts(self, thread_id: int, *, data=None):
         return thread_id, data
 
     @endpoint("thread/{}/since")
-    def _thread_posts_since(self, thread_id, since, *, data):
+    def _thread_posts_since(self, thread_id: int, since: int, *, data):
         if not isinstance(since, int):
             raise TypeError("`since` must be a UNIX timestamp")
         return thread_id, data
 
     @endpoint("post/{}")
-    def post(self, post_id):
+    def post(self, post_id: int):
         return post_id, None
 
     @endpoint("post/{}/children")
-    def post_children(self, post_id):
+    def post_children(self, post_id: int):
         return post_id, None
 
     @endpoint("post/{}/parent")
-    def post_parent(self, post_id):
+    def post_parent(self, post_id: int):
         return post_id, None
 
     @endpoint("wikidotuser/{}")
