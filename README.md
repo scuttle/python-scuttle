@@ -3,7 +3,7 @@
 ![tests](https://github.com/scuttle/python-scuttle/workflows/tests/badge.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Python wrapper around SCUTTLE API.
+Python wrapper around [SCUTTLE](https://github.com/scuttle/scuttle) API.
 
 ## Installation
 
