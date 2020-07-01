@@ -22,7 +22,7 @@ setup(
     description="Python wrapper for SCUTTLE API.",
     long_description=long_description,
     long_description_content_type='text/markdown',
-    install_requires=["requests"],
+    install_requires=["requests", "wrapt"],
     classifiers=[
         "Programming Language :: Python :: 3.8",
         "Intended Audience :: Developers",
