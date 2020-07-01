@@ -57,6 +57,7 @@ class PaginatedMethod:
 
 class Api(BaseApi):
     """API version 1"""
+
     version = 1
 
     def __init__(self, *args):
