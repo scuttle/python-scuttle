@@ -7,5 +7,6 @@ env
 .vscode
 .cache
 *.egg-info
+.eggs
 dist
 build
