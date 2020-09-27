@@ -192,12 +192,11 @@ class Api(BaseApi):
     def forum_threads(self, forum_id: int):
         return [forum_id], None
 
-    @endpoint("forum/{}/since")
+    @endpoint("forum/{}/since/{}")
     def _forum_threads_since(self, forum_id: int, since: int, *, data):
         if not isinstance(since, int):
             raise TypeError("`since` must be a UNIX timestamp")
-        data['timestamp'] = since
-        return [forum_id], data
+        return [forum_id, since], data
 
     @endpoint("thread/{}")
     def thread(self, thread_id: int):
@@ -207,11 +206,11 @@ class Api(BaseApi):
     def _thread_posts(self, thread_id: int, *, data=None):
         return [thread_id], data
 
-    @endpoint("thread/{}/since")
+    @endpoint("thread/{}/since/{}")
     def _thread_posts_since(self, thread_id: int, since: int, *, data):
         if not isinstance(since, int):
             raise TypeError("`since` must be a UNIX timestamp")
-        return [thread_id], data
+        return [thread_id, since], data
 
     @endpoint("post/{}")
     def post(self, post_id: int):

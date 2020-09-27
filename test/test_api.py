@@ -139,6 +139,13 @@ def test_forums():
     for threads_since_then in threads_since_then_gen:
         for thread in threads_since_then:
             assert isinstance(thread['title'], str)
+            thread_id = thread['id']
+    posts_since_then_gen = wiki.verbose(
+        wiki.thread_posts_since, thread_id, timestamp
+    )
+    for posts_since_then in posts_since_then_gen:
+        for post in posts_since_then:
+            assert isinstance(post['subject'], str)
 
 
 
