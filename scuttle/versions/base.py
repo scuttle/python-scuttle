@@ -12,12 +12,13 @@ class BaseApi:
         )
         self.api_key = api_key
 
-    def request(self, namespace, value=None, data=None):
+    def request(self, namespace, values=None, data=None):
         method = 'get' if data is None else 'post'
+        values = [] if values is None else values
         send = {'headers': {"Authorization": "Bearer {}".format(self.api_key)}}
         if data is not None:
             send['data'] = data
         response = getattr(requests, method)(
-            "{}/{}".format(self.endpoint, namespace.format(value)), **send
+            "{}/{}".format(self.endpoint, namespace.format(*values)), **send
         )
         return response.json()
