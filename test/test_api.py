@@ -105,11 +105,11 @@ def test_page():
     if len(files := wiki.page_files(page_id)) > 0:
         assert isinstance(files[0]['path'], str)
     # XXX waiting on propagation
-    # timestamp = 1500000000
-    # pages_since_then = wiki.pages_since(timestamp)
-    # print(pages_since_then)
-    # assert all(page['metadata']['wd_page_created_at'] >= timestamp
-    #            for page in pages_since_then)
+    timestamp = 1500000000
+    pages_since_then = wiki.pages_since(timestamp)
+    print(pages_since_then)
+    assert all(page['metadata']['wd_page_created_at'] >= timestamp
+               for page in pages_since_then)
 
 
 def test_revisions():
