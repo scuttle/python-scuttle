@@ -148,7 +148,6 @@ def test_forums():
             assert isinstance(post['subject'], str)
 
 
-
 def test_tags():
     # TODO
     pass

@@ -107,8 +107,6 @@ class Api(BaseApi):
         Note that at the end of the data, the length of the final 'page' will
         very likely be less than `limit`.
         """
-        print("hello!")
-        print(method, isinstance(method, PaginatedMethod))
         if not isinstance(method, PaginatedMethod):
             raise TypeError("Iterated method must be a paginated method")
         data = get_default_data(**kwargs)
