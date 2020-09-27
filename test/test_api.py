@@ -131,6 +131,15 @@ def test_forums():
     wiki = scuttle.scuttle('en', API_KEY, 1)
     forum_id = wiki.forums()[0]['id']
     assert wiki.forum(forum_id)['id'] == forum_id
+    assert isinstance(wiki.forum_threads(forum_id)[0]['id'], int)
+    timestamp = 1500000000
+    threads_since_then_gen = wiki.verbose(
+        wiki.forum_threads_since, forum_id, timestamp
+    )
+    for threads_since_then in threads_since_then_gen:
+        for thread in threads_since_then:
+            assert isinstance(thread['title'], str)
+
 
 
 def test_tags():
