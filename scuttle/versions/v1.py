@@ -132,138 +132,138 @@ class Api(BaseApi):
 
     @endpoint("wikis")
     def wikis(self):
-        return None, None
+        return [None], None
 
     @endpoint("wiki")
     def wiki(self):
-        return None, None
+        return [None], None
 
     @endpoint("page")
     def pages(self):
-        return None, None
+        return [None], None
 
     @endpoint("page/since/{}")
     def _pages_since(self, since: int, *, data=None):
         if not isinstance(since, int):
             raise TypeError("`since` must be a UNIX timestamp")
-        return since, data
+        return [since], data
 
     @endpoint("page/{}")
     def page_by_id(self, page_id: int):
-        return page_id, None
+        return [page_id], None
 
     @endpoint("page/slug/{}")
     def page_by_slug(self, page_slug: str):
-        return page_slug, None
+        return [page_slug], None
 
     @endpoint("page/{}/revisions")
     def _page_revisions(self, page_id: int, *, data=None):
-        return page_id, data
+        return [page_id], data
 
     @endpoint("page/{}/votes")
     def page_votes(self, page_id: int):
-        return page_id, None
+        return [page_id], None
 
     @endpoint("page/{}/tags")
     def page_tags(self, page_id: int):
-        return page_id, None
+        return [page_id], None
 
     @endpoint("page/{}/files")
     def page_files(self, page_id: int):
-        return page_id, None
+        return [page_id], None
 
     @endpoint("revision/{}")
     def revision(self, revision_id: int):
-        return revision_id, None
+        return [revision_id], None
 
     @endpoint("revision/{}/full")
     def full_revision(self, revision_id: int):
-        return revision_id, None
+        return [revision_id], None
 
     @endpoint("forum")
     def forums(self):
-        return None, None
+        return [None], None
 
     @endpoint("forum/{}")
     def forum(self, forum_id: int):
-        return forum_id, None
+        return [forum_id], None
 
     @endpoint("forum/{}/threads")
     def forum_threads(self, forum_id: int):
-        return forum_id, None
+        return [forum_id], None
 
     @endpoint("forum/{}/since")
     def _forum_threads_since(self, forum_id: int, since: int, *, data):
         if not isinstance(since, int):
             raise TypeError("`since` must be a UNIX timestamp")
         data['timestamp'] = since
-        return forum_id, data
+        return [forum_id], data
 
     @endpoint("thread/{}")
     def thread(self, thread_id: int):
-        return thread_id, None
+        return [thread_id], None
 
     @endpoint("thread/{}/posts")
     def _thread_posts(self, thread_id: int, *, data=None):
-        return thread_id, data
+        return [thread_id], data
 
     @endpoint("thread/{}/since")
     def _thread_posts_since(self, thread_id: int, since: int, *, data):
         if not isinstance(since, int):
             raise TypeError("`since` must be a UNIX timestamp")
-        return thread_id, data
+        return [thread_id], data
 
     @endpoint("post/{}")
     def post(self, post_id: int):
-        return post_id, None
+        return [post_id], None
 
     @endpoint("post/{}/children")
     def post_children(self, post_id: int):
-        return post_id, None
+        return [post_id], None
 
     @endpoint("post/{}/parent")
     def post_parent(self, post_id: int):
-        return post_id, None
+        return [post_id], None
 
     @endpoint("wikidotuser/{}")
     def wikidotuser(self, user_id: int):
-        return user_id, None
+        return [user_id], None
 
     @endpoint("wikidotuser/username/{}")
     def wikidotuser_name(self, wikidot_username: str):
-        return wikidot_username, None
+        return [wikidot_username], None
 
     @endpoint("wikidotuser/{}/avatar")
     def wikidotuser_avatar(self, wikidot_user_id: int):
-        return wikidot_user_id, None
+        return [wikidot_user_id], None
 
     @endpoint("wikidotuser/{}/pages")
     def _wikidotuser_pages(self, wikidot_user_id: int, *, data=None):
         if not isinstance(wikidot_user_id, int):
             raise TypeError("Wikidot user ID must be an int")
-        return wikidot_user_id, data
+        return [wikidot_user_id], data
 
     @endpoint("wikidotuser/{}/posts")
     def _wikidotuser_posts(self, wikidot_user_id: int, *, data=None):
         if not isinstance(wikidot_user_id, int):
             raise TypeError("Wikidot user ID must be an int")
-        return wikidot_user_id, data
+        return [wikidot_user_id], data
 
     @endpoint("wikidotuser/{}/revisions")
     def _wikidotuser_revisions(self, wikidot_user_id: int, *, data=None):
         if not isinstance(wikidot_user_id, int):
             raise TypeError("Wikidot user ID must be an int")
-        return wikidot_user_id, data
+        return [wikidot_user_id], data
 
     @endpoint("wikidotuser/{}/votes")
     def wikidotuser_votes(self, wikidot_user_id: int):
         if not isinstance(wikidot_user_id, int):
             raise TypeError("Wikidot user ID must be an int")
-        return wikidot_user_id, None
+        return [wikidot_user_id], None
 
     @endpoint("tag")
     def tags(self):
-        return None, None
+        return [None], None
 
     @endpoint("tag/{}/pages")
     def tag_pages(self, tag: str):
@@ -272,7 +272,7 @@ class Api(BaseApi):
         """
         if not isinstance(tag, str):
             raise TypeError("A single tag must be a string")
-        return tag, None
+        return [tag], None
 
     @endpoint("tag/pages")
     def _tags_pages(
