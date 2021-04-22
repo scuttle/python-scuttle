@@ -79,6 +79,7 @@ class Api(BaseApi):
         self.thread_posts_since = PaginatedMethod(
             self._thread_posts_since, True
         )
+        self.posts_since = PaginatedMethod(self._posts_since)
         self.wikidotuser_pages = PaginatedMethod(self._wikidotuser_pages)
         self.wikidotuser_posts = PaginatedMethod(self._wikidotuser_posts)
         self.wikidotuser_revisions = PaginatedMethod(
@@ -209,6 +210,12 @@ class Api(BaseApi):
         if not isinstance(since, int):
             raise TypeError("`since` must be a UNIX timestamp")
         return [thread_id, since], data
+
+    @endpoint("post/since/{}")
+    def _posts_since(self, since: int, *, data=None):
+        if not isinstance(since, int):
+            raise TypeError("`since` must be a UNIX timestamp")
+        return [since], data
 
     @endpoint("post/{}")
     def post(self, post_id: int):

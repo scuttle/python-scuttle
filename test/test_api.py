@@ -136,16 +136,19 @@ def test_forums():
     threads_since_then_gen = wiki.verbose(
         wiki.forum_threads_since, forum_id, timestamp
     )
-    for threads_since_then in threads_since_then_gen:
-        for thread in threads_since_then:
-            assert isinstance(thread['title'], str)
-            thread_id = thread['id']
-    posts_since_then_gen = wiki.verbose(
-        wiki.thread_posts_since, thread_id, timestamp
+    for thread in next(threads_since_then_gen):
+        assert isinstance(thread['title'], str)
+        thread_id = thread['id']
+    posts_in_thread_since_then_gen = wiki.verbose(
+        wiki.thread_posts_in_thread_since, thread_id, timestamp
     )
-    for posts_since_then in posts_since_then_gen:
-        for post in posts_since_then:
-            assert isinstance(post['subject'], str)
+    for post in next(posts_in_thread_since_then_gen):
+        assert isinstance(post['subject'], str)
+    get_posts_since_then = wiki.posts_since(timestamp)
+    assert all('thread_id' in post for post in get_posts_since_then)
+    post_posts_since_then_gen = wiki.verbose(wiki.posts_since, timestamp)
+    for post in next(post_posts_since_then_gen):
+        assert isinstance(post['subject'], str)
 
 
 def test_tags():
